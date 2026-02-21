@@ -1,0 +1,64 @@
+openapi: "3.1.0"
+info:
+  title: Meradea API
+  description: >
+    Public-facing REST API for the Meradea marketplace platform.
+    This specification is a placeholder and will be expanded service by service.
+  version: "0.0.1"
+  contact:
+    name: Meradea Team
+    url: https://github.com/meradea
+
+servers:
+  - url: https://api.meradea.com/v1
+    description: Production
+  - url: https://api.staging.meradea.com/v1
+    description: Staging
+  - url: http://localhost:8080/v1
+    description: Local development
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Paths — to be filled in as services are built
+# ─────────────────────────────────────────────────────────────────────────────
+paths: { }
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Reusable components
+# ─────────────────────────────────────────────────────────────────────────────
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    Error:
+      type: object
+      required: [ code, message ]
+      properties:
+        code:
+          type: string
+          example: "RESOURCE_NOT_FOUND"
+        message:
+          type: string
+          example: "The requested listing was not found."
+        details:
+          type: object
+          additionalProperties: true
+
+    PaginatedMeta:
+      type: object
+      properties:
+        page:
+          type: integer
+        pageSize:
+          type: integer
+        totalElements:
+          type: integer
+        totalPages:
+          type: integer
+
+security:
+  - bearerAuth: [ ]
+
