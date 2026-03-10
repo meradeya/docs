@@ -73,8 +73,9 @@ docs/
 ├── ROADMAP.md             ← Phased delivery plan
 ├── CONTRIBUTING.md        ← How to contribute
 ├── architecture/
-│   ├── overview.md        ← System architecture overview
-│   └── adr/               ← Architecture Decision Records
+│   ├── overview.md                ← System architecture overview
+│   ├── database-schema.md         ← DB schema & ER diagram (Core Service)
+│   └── adr/                       ← Architecture Decision Records
 ├── api/
 │   └── openapi.yaml       ← API specification
 └── features/
