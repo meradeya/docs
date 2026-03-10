@@ -1,10 +1,10 @@
 # ADR-003 — Messaging Broker
 
-| Field        | Value             |
-|--------------|-------------------|
-| **Status**   | 🟡 Proposed       |
-| **Date**     | —                 |
-| **Deciders** | Meradea core team |
+| Field        | Value              |
+|--------------|--------------------|
+| **Status**   | 🟡 Proposed        |
+| **Date**     | —                  |
+| **Deciders** | Meradeya core team |
 
 ---
 

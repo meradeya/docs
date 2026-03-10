@@ -4,7 +4,7 @@
 |-------------------|----------------------------------|
 | **Status**        | Proposed / Accepted / Deprecated |
 | **Date**          | YYYY-MM-DD                       |
-| **Deciders**      | _List team members involved_     |
+| **Deciders**      | _List team members_              |
 | **Supersedes**    | —                                |
 | **Superseded by** | —                                |
 
@@ -12,7 +12,7 @@
 
 ## Context
 
-> _What is the issue that motivates this decision? What is the background? What forces are at play?_
+_What is the problem? What forces are at play?_
 
 ---
 
@@ -32,7 +32,7 @@
 
 ## Decision
 
-> _State the decision clearly. "We will use X because Y."_
+_"We will use X because Y."_
 
 ---
 
@@ -40,7 +40,7 @@
 
 ### Positive
 
-- _What becomes easier or better?_
+- _What becomes easier?_
 
 ### Negative / Trade-offs
 
@@ -54,5 +54,4 @@
 
 ## Notes / References
 
-- _Links to relevant docs, benchmarks, blog posts, etc._
-
+- _Links to relevant docs, benchmarks, etc._

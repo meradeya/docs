@@ -1,18 +1,18 @@
 openapi: "3.1.0"
 info:
-  title: Meradea API
+  title: Meradeya API
   description: >
-    Public-facing REST API for the Meradea marketplace platform.
+    Public-facing REST API for the Meradeya marketplace platform.
     This specification is a placeholder and will be expanded service by service.
   version: "0.0.1"
   contact:
-    name: Meradea Team
-    url: https://github.com/meradea
+    name: Meradeya Team
+    url: https://github.com/meradeya
 
 servers:
-  - url: https://api.meradea.com/v1
+  - url: https://api.meradeya.com/v1
     description: Production
-  - url: https://api.staging.meradea.com/v1
+  - url: https://api.staging.meradeya.com/v1
     description: Staging
   - url: http://localhost:8080/v1
     description: Local development

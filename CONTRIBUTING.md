@@ -1,4 +1,4 @@
-# Contributing to Meradea Docs
+# Contributing to Meradeya Docs
 
 ---
 

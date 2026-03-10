@@ -4,7 +4,7 @@
 |--------------|--------------------|
 | **Status**   | 🔵 To be discussed |
 | **Date**     | —                  |
-| **Deciders** | Meradea core team  |
+| **Deciders** | Meradeya core team |
 
 ---
 
