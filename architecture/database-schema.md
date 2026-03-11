@@ -1,7 +1,9 @@
 # App Service — Database Schema
 
 > **Service:** App Service (users + listings)
-> **Database:** PostgreSQL (see [ADR-002](./adr/ADR-002-database.md))
+>
+> **Database:** PostgreSQL (see [ADR-002](adr/ADR-002-database.md))
+>
 > **Migrations:** Flyway
 
 ---
@@ -18,6 +20,7 @@ erDiagram
         varchar status "ACTIVE | SUSPENDED | DELETED"
         timestamptz created_at
         timestamptz updated_at
+        bigint version "DEFAULT 0, optimistic lock"
     }
 
     USER_PROFILES {
@@ -27,6 +30,7 @@ erDiagram
         varchar location
         text bio
         timestamptz updated_at
+        bigint version "DEFAULT 0, optimistic lock"
     }
 
     REFRESH_TOKENS {
@@ -36,6 +40,7 @@ erDiagram
         timestamptz expires_at "NOT NULL"
         boolean revoked "DEFAULT false"
         timestamptz created_at
+        bigint version "DEFAULT 0, optimistic lock"
     }
 
     AUTH_TOKENS {
@@ -46,6 +51,7 @@ erDiagram
         timestamptz expires_at "NOT NULL"
         timestamptz used_at
         timestamptz created_at
+        bigint version "DEFAULT 0, optimistic lock"
     }
 
     CATEGORIES {
@@ -53,6 +59,7 @@ erDiagram
         int parent_id FK "nullable"
         varchar name "NOT NULL"
         varchar slug UK "NOT NULL"
+        bigint version "DEFAULT 0, optimistic lock"
     }
 
     LISTINGS {
@@ -70,6 +77,7 @@ erDiagram
         tsvector search_vector "auto-updated via trigger"
         timestamptz created_at
         timestamptz updated_at
+        bigint version "DEFAULT 0, optimistic lock"
     }
 
     LISTING_PHOTOS {
@@ -78,6 +86,7 @@ erDiagram
         varchar url "NOT NULL"
         smallint display_order "DEFAULT 0"
         timestamptz created_at
+        bigint version "DEFAULT 0, optimistic lock"
     }
 
     USERS ||--|| USER_PROFILES: "has profile"
@@ -106,6 +115,7 @@ Core identity record. Credentials only — profile data lives in `user_profiles`
 | `status`         | `varchar`      | `ACTIVE` \| `SUSPENDED` \| `DELETED` |
 | `created_at`     | `timestamptz`  |                                      |
 | `updated_at`     | `timestamptz`  |                                      |
+| `version`        | `bigint`       | Default `0`, optimistic lock         |
 
 ---
 
@@ -113,14 +123,15 @@ Core identity record. Credentials only — profile data lives in `user_profiles`
 
 One-to-one with `users`. Separated to keep auth queries lean.
 
-| Column         | Type           | Notes              |
-|----------------|----------------|--------------------|
-| `user_id`      | `uuid`         | PK, FK → `users`   |
-| `display_name` | `varchar(100)` | NOT NULL           |
-| `avatar_url`   | `varchar(500)` | Object storage URL |
-| `location`     | `varchar(200)` | Free text for now  |
-| `bio`          | `text`         |                    |
-| `updated_at`   | `timestamptz`  |                    |
+| Column         | Type           | Notes                        |
+|----------------|----------------|------------------------------|
+| `user_id`      | `uuid`         | PK, FK → `users`             |
+| `display_name` | `varchar(100)` | NOT NULL                     |
+| `avatar_url`   | `varchar(500)` | Object storage URL           |
+| `location`     | `varchar(200)` | Free text for now            |
+| `bio`          | `text`         |                              |
+| `updated_at`   | `timestamptz`  |                              |
+| `version`      | `bigint`       | Default `0`, optimistic lock |
 
 ---
 
@@ -128,14 +139,15 @@ One-to-one with `users`. Separated to keep auth queries lean.
 
 Stores hashed refresh tokens for JWT auth.
 
-| Column       | Type          | Notes                |
-|--------------|---------------|----------------------|
-| `id`         | `uuid`        | PK                   |
-| `user_id`    | `uuid`        | FK → `users`         |
-| `token_hash` | `varchar`     | SHA-256 of raw token |
-| `expires_at` | `timestamptz` |                      |
-| `revoked`    | `boolean`     | Default `false`      |
-| `created_at` | `timestamptz` |                      |
+| Column       | Type          | Notes                        |
+|--------------|---------------|------------------------------|
+| `id`         | `uuid`        | PK                           |
+| `user_id`    | `uuid`        | FK → `users`                 |
+| `token_hash` | `varchar`     | SHA-256 of raw token         |
+| `expires_at` | `timestamptz` |                              |
+| `revoked`    | `boolean`     | Default `false`              |
+| `created_at` | `timestamptz` |                              |
+| `version`    | `bigint`      | Default `0`, optimistic lock |
 
 Index on `(user_id, revoked)`.
 
@@ -154,6 +166,7 @@ Single-use tokens for email verification and password reset.
 | `expires_at` | `timestamptz` |                                    |
 | `used_at`    | `timestamptz` | Null until consumed                |
 | `created_at` | `timestamptz` |                                    |
+| `version`    | `bigint`      | Default `0`, optimistic lock       |
 
 ---
 
@@ -161,12 +174,13 @@ Single-use tokens for email verification and password reset.
 
 Admin-managed, self-referencing category tree.
 
-| Column      | Type           | Notes                       |
-|-------------|----------------|-----------------------------|
-| `id`        | `int`          | PK                          |
-| `parent_id` | `int`          | FK → `categories`, nullable |
-| `name`      | `varchar(100)` | NOT NULL                    |
-| `slug`      | `varchar(100)` | Unique                      |
+| Column      | Type           | Notes                        |
+|-------------|----------------|------------------------------|
+| `id`        | `int`          | PK                           |
+| `parent_id` | `int`          | FK → `categories`, nullable  |
+| `name`      | `varchar(100)` | NOT NULL                     |
+| `slug`      | `varchar(100)` | Unique                       |
+| `version`   | `bigint`       | Default `0`, optimistic lock |
 
 ---
 
@@ -191,6 +205,7 @@ schema.
 | `search_vector` | `tsvector`      | Auto-updated via trigger on `title` + `description` |
 | `created_at`    | `timestamptz`   |                                                     |
 | `updated_at`    | `timestamptz`   |                                                     |
+| `version`       | `bigint`        | Default `0`, optimistic lock                        |
 
 Key indexes: GIN on `search_vector`, GIN on `attributes`, btree on `(seller_id, status)`, btree on
 `(category_id, status)`.
@@ -201,13 +216,14 @@ Key indexes: GIN on `search_vector`, GIN on `attributes`, btree on `(seller_id, 
 
 Ordered photos per listing. Actual files live in object storage; this table holds URLs only.
 
-| Column          | Type           | Notes                |
-|-----------------|----------------|----------------------|
-| `id`            | `uuid`         | PK                   |
-| `listing_id`    | `uuid`         | FK → `listings`      |
-| `url`           | `varchar(500)` | NOT NULL             |
-| `display_order` | `smallint`     | 0-based, default `0` |
-| `created_at`    | `timestamptz`  |                      |
+| Column          | Type           | Notes                        |
+|-----------------|----------------|------------------------------|
+| `id`            | `uuid`         | PK                           |
+| `listing_id`    | `uuid`         | FK → `listings`              |
+| `url`           | `varchar(500)` | NOT NULL                     |
+| `display_order` | `smallint`     | 0-based, default `0`         |
+| `created_at`    | `timestamptz`  |                              |
+| `version`       | `bigint`       | Default `0`, optimistic lock |
 
 ---
 
@@ -218,4 +234,3 @@ Ordered photos per listing. Actual files live in object storage; this table hold
 - Enum-like columns use `varchar` with a check constraint — avoids painful Postgres enum migrations.
 - `search_vector` is maintained by a `BEFORE INSERT OR UPDATE` trigger; no application-side FTS wiring needed.
 - Schema migrations are managed with Flyway (`V1__init.sql`, etc.).
-
