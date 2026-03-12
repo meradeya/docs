@@ -55,7 +55,7 @@ erDiagram
     }
 
     CATEGORIES {
-        int id PK
+        uuid id PK
         int parent_id FK "nullable"
         varchar name "NOT NULL"
         varchar slug UK "NOT NULL"
@@ -176,7 +176,7 @@ Admin-managed, self-referencing category tree.
 
 | Column      | Type           | Notes                        |
 |-------------|----------------|------------------------------|
-| `id`        | `int`          | PK                           |
+| `id`        | `uuid`         | PK                           |
 | `parent_id` | `int`          | FK → `categories`, nullable  |
 | `name`      | `varchar(100)` | NOT NULL                     |
 | `slug`      | `varchar(100)` | Unique                       |
