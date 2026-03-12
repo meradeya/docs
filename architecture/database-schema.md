@@ -56,7 +56,7 @@ erDiagram
 
     CATEGORIES {
         uuid id PK
-        int parent_id FK "nullable"
+        uuid parent_id FK "nullable"
         varchar name "NOT NULL"
         varchar slug UK "NOT NULL"
         bigint version "DEFAULT 0, optimistic lock"
@@ -65,7 +65,7 @@ erDiagram
     LISTINGS {
         uuid id PK
         uuid seller_id FK
-        int category_id FK
+        uuid category_id FK
         varchar title "NOT NULL"
         text description
         numeric price "12,2 — NOT NULL"
@@ -177,7 +177,7 @@ Admin-managed, self-referencing category tree.
 | Column      | Type           | Notes                        |
 |-------------|----------------|------------------------------|
 | `id`        | `uuid`         | PK                           |
-| `parent_id` | `int`          | FK → `categories`, nullable  |
+| `parent_id` | `uuid`         | FK → `categories`, nullable  |
 | `name`      | `varchar(100)` | NOT NULL                     |
 | `slug`      | `varchar(100)` | Unique                       |
 | `version`   | `bigint`       | Default `0`, optimistic lock |
@@ -193,7 +193,7 @@ schema.
 |-----------------|-----------------|-----------------------------------------------------|
 | `id`            | `uuid`          | PK                                                  |
 | `seller_id`     | `uuid`          | FK → `users`                                        |
-| `category_id`   | `int`           | FK → `categories`                                   |
+| `category_id`   | `uuid`          | FK → `categories`                                   |
 | `title`         | `varchar(200)`  | NOT NULL                                            |
 | `description`   | `text`          |                                                     |
 | `price`         | `numeric(12,2)` | NOT NULL                                            |
